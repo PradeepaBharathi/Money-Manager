@@ -6,8 +6,8 @@ const mongoConnectionString= process.env.MONGO_URL
 
 
 export async function dbConnection(){
-    const client = new MongoClient(mongoConnectionString);
-    // const client = await MongoClient.connect(mongoConnectionString, { useUnifiedTopology: true });
+    // const client = new MongoClient(mongoConnectionString);
+    const client = await MongoClient.connect(mongoConnectionString, { useUnifiedTopology: true });
     await client.connect();
     console.log("DB Connected");
     return client
