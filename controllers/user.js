@@ -34,3 +34,19 @@ export function generateToken(id, secret) {
         { expiresIn: "30d" }
     )
 }
+
+export function updateUserToken(userId, token) {
+    return client
+        .db("Moneytracker")
+        .collection("user")
+        .updateOne(
+            { _id: userId },
+            { $set: { token: token } }
+        )
+}
+export function tokenUsed(data) {
+    return client
+        .db("Moneytracker")
+        .collection("tokens")
+        .insertOne(data)
+}

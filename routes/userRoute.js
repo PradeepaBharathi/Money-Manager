@@ -1,5 +1,5 @@
 import express from "express";
-import { generateToken, getUserByEmail, registerUser } from "../controllers/user.js";
+import { generateToken, getUserByEmail, updateUserToken, registerUser } from "../controllers/user.js";
 import bcrypt from "bcryptjs"
 const router = express.Router()
 
@@ -17,8 +17,9 @@ router.post("/add-user", async (req, res) => {
         }
         const hashedPassword = await bcrypt.hash(Password, salt)
         console.log(hashedPassword)
-        const result = await registerUser({ Name, Email, Password :hashedPassword})
-        console.log(result)
+        
+        const result = await registerUser({ Name, Email, Password :hashedPassword,})
+        
         if (!result.acknowledged) {
             return res.status(500).send({message:"Error Occured"})
         }
@@ -51,7 +52,20 @@ router.post("/login", async (req, res) => {
             else {
                 const token = generateToken(validUser._id);
                 console.log(token)
-                res.send({ status: 201, data: validUser, token: token });
+               const updateTokenResult = await updateUserToken(
+                 validUser._id,
+                 token
+                );
+                
+                if (updateTokenResult.acknowledged) {
+                  res
+                    .status(201)
+                    .send({ status: 201, data: validUser, token: token });
+                } else {
+                  return res
+                    .status(500)
+                    .send({ message: "Error updating token" });
+                }
             }
         
         }
