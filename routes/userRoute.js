@@ -13,7 +13,7 @@ router.post("/add-user", async (req, res) => {
 
         const existingUser = await getUserByEmail(Email);
         if (existingUser) {
-            return res.status(401).send({message:"user already exists"})
+            return res.status(400).send({message:"User already exists"})
         }
         const hashedPassword = await bcrypt.hash(Password, salt)
         console.log(hashedPassword)
